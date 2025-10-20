@@ -17,3 +17,6 @@ route.put("/update/user/:id", update);
 route.delete("/delete/user/:id", deleteUser);
 
 export default route;
+
+// routes for backend
+//  building routes

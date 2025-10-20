@@ -4,94 +4,122 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const UpdateUser = () => {
-  const users = {
+const UpdateTask = () => {
+  const initialTask = {
     name: "",
-    email: "",
-    address: "",
+    description: "",
+    dueDate: "",
+    status: false, // ✅ keep same as backend
   };
-  const [user, setUser] = useState(users);
+
+  const [task, setTask] = useState(initialTask);
   const navigate = useNavigate();
   const { id } = useParams();
 
+  // Handle input changes
   const inputHandler = (e) => {
-    const { name, value } = e.target;
-    console.log(name, value);
-
-    setUser({ ...user, [name]: value });
+    const { name, value, type, checked } = e.target;
+    setTask({
+      ...task,
+      [name]: type === "checkbox" ? checked : value
+    });
   };
 
+  // Fetch task details on mount
   useEffect(() => {
     axios
       .get(`http://localhost:8000/api/user/${id}`)
       .then((response) => {
-        setUser(response.data);
+        setTask(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
+        toast.error("Failed to fetch task data");
       });
   }, [id]);
 
+  // Submit updated task
   const submitForm = async (e) => {
     e.preventDefault();
-    await axios
-      .put(`http://localhost:8000/api/update/user/${id}`, user)
-      .then((response) => {
-        toast.success(response.data.message, { position: "top-right" });
-        navigate("/");
-      })
-      .catch((error) => {
-        console.log(error);
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/update/user/${id}`,
+        task
+      );
+      toast.success(response.data.message || "Task updated successfully", {
+        position: "top-right",
       });
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update task", { position: "top-right" });
+    }
   };
 
   return (
     <div className="addUser">
-      <Link to="/" type="button" class="btn btn-secondary">
-        <i class="fa-solid fa-backward"></i> Back
+      <Link to="/" type="button" className="btn btn-secondary">
+        <i className="fa-solid fa-backward"></i> Back
       </Link>
 
-      <h3>Update User</h3>
+      <h3>Update Task</h3>
       <form className="addUserForm" onSubmit={submitForm}>
         <div className="inputGroup">
-          <label htmlFor="name">Name:</label>
+          <label htmlFor="name">Task Name:</label>
           <input
             type="text"
             id="name"
-            value={user.name}
+            value={task.name}
             onChange={inputHandler}
             name="name"
             autoComplete="off"
-            placeholder="Enter your Name"
+            placeholder="Enter Task Name"
+            required
           />
         </div>
+
         <div className="inputGroup">
-          <label htmlFor="email">E-mail:</label>
-          <input
-            type="email"
-            id="email"
-            value={user.email}
+          <label htmlFor="description">Description:</label>
+          <textarea
+            id="description"
+            value={task.description}
             onChange={inputHandler}
-            name="email"
+            name="description"
             autoComplete="off"
-            placeholder="Enter your Email"
+            placeholder="Enter Task Description"
+            required
           />
         </div>
+
         <div className="inputGroup">
-          <label htmlFor="address">Address:</label>
+          <label htmlFor="dueDate">Due Date:</label>
           <input
-            type="text"
-            id="address"
-            value={user.address}
+            type="date"
+            id="dueDate"
+            value={task.dueDate ? task.dueDate.slice(0, 10) : ""}
             onChange={inputHandler}
-            name="address"
-            autoComplete="off"
-            placeholder="Enter your Address"
+            name="dueDate"
+            required
           />
         </div>
+
+        {/* ✅ Status checkbox added */}
         <div className="inputGroup">
-          <button type="submit" class="btn btn-primary">
-            Submit
+          <label htmlFor="status">
+            <input
+              type="checkbox"
+              id="status"
+              name="status"
+              checked={task.status}
+              onChange={inputHandler}
+            />
+            Completed?
+          </label>
+        </div>
+
+        <div className="inputGroup">
+          <button type="submit" className="btn btn-primary">
+            Update
           </button>
         </div>
       </form>
@@ -99,4 +127,4 @@ const UpdateUser = () => {
   );
 };
 
-export default UpdateUser;
+export default UpdateTask;

@@ -5,10 +5,14 @@ import dotenv from "dotenv";
 import route from "./routes/userRoute.js";
 import cors from "cors";
 
+dotenv.config();
+
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
-dotenv.config();
+
+// Mount routes BEFORE connecting DB and starting server
+app.use("/api", route);
 
 const PORT = process.env.PORT || 7000;
 const MONGOURL = process.env.MONGO_URL;
@@ -18,9 +22,7 @@ mongoose
   .then(() => {
     console.log("DB connected successfully.");
     app.listen(PORT, () => {
-      console.log(`Server is running on port :${PORT} `);
+      console.log(`Server is running on port: ${PORT}`);
     });
   })
   .catch((error) => console.log(error));
-
-app.use("/api", route);

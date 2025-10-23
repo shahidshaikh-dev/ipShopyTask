@@ -12,12 +12,13 @@ const User = () => {
       try {
         const response = await axios.get("http://localhost:8000/api/users");
         setTasks(response.data);
-        console.log("all data", response.data)
+        console.log("all data", response.data);
       } catch (error) {
         console.log("Error while fetching data", error);
       }
     };
     fetchData();
+    // fetchData();
   }, []);
 
   const deleteTask = async (taskId) => {

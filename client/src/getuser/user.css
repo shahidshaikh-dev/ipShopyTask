@@ -13,6 +13,7 @@
 .userTable table thead th {
   background-color: darkcyan;
   color: white;
+  /* color: white; */
 }
 
 .userTable table tbody td {

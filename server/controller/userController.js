@@ -3,8 +3,6 @@ import User from "../model/userModel.js";
 export const create = async (req, res) => {
   try {
     const newUser = new User(req.body);
-
-    // Remove the email duplicate check if email is not required
     const savedData = await newUser.save();
 
     res.status(200).json({ message: "User created successfully." });
@@ -12,7 +10,6 @@ export const create = async (req, res) => {
     res.status(500).json({ errorMessage: error.message });
   }
 };
-
 
 export const getAllUsers = async (req, res) => {
   try {

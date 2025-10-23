@@ -8,23 +8,21 @@ const AddTask = () => {
     name: "",
     description: "",
     dueDate: "",
-    status: false, // Default to pending
+    status: false,
   };
 
   const [task, setTask] = useState(initialTask);
   const navigate = useNavigate();
 
-  // Handle input changes
   const inputHandler = (e) => {
     const { name, value } = e.target;
     setTask({ ...task, [name]: value });
   };
 
-  // Handle form submission
 const submitForm = async (e) => {
   e.preventDefault();
   try {
-   const response = await axios.post("http://localhost:8000/api/user", task);// <--- correct
+   const response = await axios.post("http://localhost:8000/api/user", task);
     toast.success(response.data.message || "Task created successfully", {
       position: "top-right",
     });
@@ -39,7 +37,6 @@ const submitForm = async (e) => {
     );
   }
 };
-
 
   return (
     <div className="addUser">
@@ -62,7 +59,6 @@ const submitForm = async (e) => {
             required
           />
         </div>
-
         <div className="inputGroup">
           <label htmlFor="description">Description:</label>
           <textarea
@@ -87,7 +83,6 @@ const submitForm = async (e) => {
             required
           />
         </div>
-
         <div className="inputGroup">
           <button type="submit" className="btn btn-primary">
             Submit

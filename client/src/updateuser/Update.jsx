@@ -9,28 +9,27 @@ const UpdateTask = () => {
     name: "",
     description: "",
     dueDate: "",
-    status: false, // ✅ keep same as backend
+    status: false,
   };
 
   const [task, setTask] = useState(initialTask);
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // Handle input changes
   const inputHandler = (e) => {
     const { name, value, type, checked } = e.target;
     setTask({
       ...task,
-      [name]: type === "checkbox" ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     });
   };
-
-  // Fetch task details on mount
   useEffect(() => {
     axios
       .get(`http://localhost:8000/api/user/${id}`)
       .then((response) => {
         setTask(response.data);
+        console.log("this is task data", task);
+
       })
       .catch((error) => {
         console.error(error);
@@ -38,7 +37,6 @@ const UpdateTask = () => {
       });
   }, [id]);
 
-  // Submit updated task
   const submitForm = async (e) => {
     e.preventDefault();
     try {
@@ -103,7 +101,6 @@ const UpdateTask = () => {
           />
         </div>
 
-        {/* ✅ Status checkbox added */}
         <div className="inputGroup">
           <label htmlFor="status">
             <input

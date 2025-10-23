@@ -11,7 +11,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// Mount routes BEFORE connecting DB and starting server
 app.use("/api", route);
 
 const PORT = process.env.PORT || 7000;
